@@ -57,3 +57,34 @@ function Get-SystemInfo {
 
 # Save the function in your profile
 Set-Alias -Name Get-SysInfo -Value Get-SystemInfo
+
+function Get-ComputerName {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Username
+    )
+
+    $csvPath = "C:\Users\igor.jagec\OneDrive - Pentex Ltd\IT Team\UserComputers.csv"
+
+    # Check if the CSV file exists
+    if (-Not (Test-Path -Path $csvPath)) {
+        Write-Error "CSV file not found at $csvPath"
+        return
+    }
+
+    # Import the CSV data
+    $userComputers = Import-Csv -Path $csvPath
+
+    # Find the computer name for the given username
+    $computer = $userComputers | Where-Object { $_.Username -ieq $Username }
+
+    if ($computer) {
+        return $computer.ComputerName
+    } else {
+        Write-Output "No computer found for username: $Username"
+    }
+}
+
+
+
+net use S: "\\pentex.local\corpdata\FileShares\Pentex Shared" F0rzaM1lan /user:igor.jagec
